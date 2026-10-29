@@ -99,7 +99,7 @@ Registro editado de las iteraciones decisivas de la sesión del **28 de octubre 
 
 ## 5. Ajuste de diagramas solicitado por el usuario
 
-**Prompt editado para la evidencia a partir de la instrucción del usuario:**
+**Prompt de instrucción del usuario:**
 
 ```text
 Para el diagrama de componentes  sugiero enfocarnos  en 2 vertientes enfocandonos a el usuario primero vista usuario/tecnologia es decir usuario-web/whatsapp- api negocio / api ia (whatsapp) -db-pac etc y el otro enfocado a un nivel mas gerencial sobre el flujo soft
@@ -107,6 +107,17 @@ Para el diagrama de componentes  sugiero enfocarnos  en 2 vertientes enfocandono
 
 **Cambio aplicado:** el diagrama de componentes pasó a dos vistas: recorrido del usuario por canales y sistemas, y flujo gerencial del servicio. La secuencia de reserva y débito de créditos permanece en su sección técnica.
 
-## 6. Arnés y límites de la evidencia
+
+## 6. Ajuste de diagramas solicitado por el usuario
+
+**Prompt de instrucción del usuario:**
+
+```text
+Necesitamos generar un flujo a nivel atomico de el sistema de mensajeria de whatsapp, para manejar  la resiliencia, control de costos y caidas de proveedores de ia
+```
+
+**Cambio aplicado:** se genero un nuevo diagrama y seccion para el flujo de mensajeria de whatsapp a nivel atomico.
+
+## 7. Arnés y límites de la evidencia
 
 Se ejecutó `npx --yes @fission-ai/openspec@latest init --tools none --language Spanish --no-animation`; el CLI informó versión `1.15.0`. Después se creó el cambio `lanzamiento-mvp`. La opción `--tools none` mantiene solo OpenSpec y evita seis skills generadas que no aportaban a esta entrega; `AGENTS.md` contiene las reglas locales. Codex redactó y corrigió los documentos a partir de las decisiones anteriores. No se utilizaron subagentes ni se ejecutó una prueba de producto.
