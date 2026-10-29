@@ -1,0 +1,18 @@
+schema: spec-driven
+
+context: |
+  Gege Tel lanzará en ocho semanas un portal empresarial y beneficios para titulares de línea por web y WhatsApp.
+  Equipo: cuatro personas. Entregable actual: arquitectura y especificación; no existe implementación.
+  Componentes acordados: API de negocio, sincronizadores de proveedores y ejecución de IA; una base PostgreSQL cuyo acceso de aplicación pertenece a la API.
+  Un crédito se reserva por respuesta del asistente y se confirma al entregarse: WhatsApp exige estado delivered/read, no solo envío aceptado.
+  Escribir en español. Mantener los encabezados estructurales y SHALL/MUST de OpenSpec en inglés.
+
+rules:
+  proposal:
+    - Explicar valor, alcance y exclusiones en menos de 400 palabras.
+  specs:
+    - Escribir comportamientos observables y escenarios verificables; evitar decisiones de implementación.
+  design:
+    - Explicitar límites de confianza, dueño de cada dato y fallos de proveedores.
+  tasks:
+    - Mantener hitos comprobables para cuatro personas y ocho semanas.
