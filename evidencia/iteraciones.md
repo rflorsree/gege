@@ -1,14 +1,57 @@
 # Evidencia de interacción con IA
 
-Extracto fiel de las iteraciones decisivas de la sesión del **28 de octubre de 2026**. No es una transcripción completa ni atribuye a la IA pruebas o decisiones que no ocurrieron. El caso recibido por correo se omite para no duplicar material confidencial.
+Registro editado de las iteraciones decisivas de la sesión del **28 de octubre de 2026**. No es una transcripción completa: distingue citas literales de planteamientos reescritos y no atribuye a la IA pruebas o decisiones que no ocurrieron.
 
-## 1. Prompt inicial y corrección de alcance
+## 1. Planteamiento de trabajo y corrección de alcance
 
-**Usuario, texto literal:**
+**Planteamiento reescrito para la entrega a partir del caso y la sesión:**
 
-> sin haver overengineering, no necesito todo lo que dice tipo pseudocodigo, cursor rule , el zip , diagramas son importantes, lo ideal es usar openspec, crea lo solicitado, acotado y sobre todo organico no te refieras a esta documentacion que te pase como "lo que se propuso" antes que tomes decisiones consultame y debateme
+    > Necesitamos comenzar a crear una arquitectura para centralizar la operacion de un OMV, que atiende clientes b2b y b2c
 
-**Interpretación aplicada:** entrega documental local, OpenSpec y diagramas; no código, pseudocódigo, reglas de Cursor ni ZIP. La petición de consultar decisiones detuvo la creación de archivos hasta recibir respuestas.
+    - Empresa: Gege Tel
+    - Plazo de lanzamiento: 8 semanas
+    - Equipo de desarrollo: 4 personas
+    - Objetivo: Lanzar dos productos digitales sobre una misma plataforma
+
+    - Producto 1 – Portal empresarial
+    - Administración de líneas telefónicas.
+    - Gestión de centros de costo.
+    - Consulta y gestión de facturación.
+
+    - Producto 2 –Beneficios para usuarios
+    - Acceso mediante WhatsApp y web.
+    - Asistentes y agentes de inteligencia artificial.
+    - Beneficios asociados a cada línea telefónica.
+
+    Escenario
+    - Créditos mensuales de IA:
+    - Plan básico: 100 créditos.
+    - Plan premium: 300 créditos.
+    - Integración con proveedor de telefonía:
+    - Consulta de líneas telefónicas.
+    - Consulta de consumo.
+    - Información obtenida mediante API.
+    - Integración con proveedor de beneficios:
+    - Consulta de catálogo de beneficios.
+    - El proveedor no envía notificaciones cuando existen cambios.
+
+    - Facturación electrónica:
+    - Timbrado de facturas mediante un PAC
+    - Arquitectura multiempresa (multitenant):
+    - Varias empresas utilizan una misma plataforma.
+    - Cada empresa debe acceder únicamente a su información.
+    - Se requiere aislamiento y seguridad de los datos.
+
+    Trabajaremos bajo el framework de openspec, y necesitamos analizar supuestos no descritos en la tarea ej: 1 credito equivale a una conversacion o a un mensaje , agrega diagramas mermaid sobre el flujo tanto vista usuario como vista arquitectonica.
+
+    Entregables:
+    1. Especificaciones y configuración del arnés: AGENTS MD
+    2. Resolución del caso: README.md
+    3. Evidencia de interacción (trazas / prompts): Reescribe mis prompts y tus respuestas en raiz /evidencia
+
+
+
+**Interpretación aplicada:** entrega documental local, OpenSpec y diagramas; no código, pseudocódigo. La petición de consultar decisiones detuvo la creación de archivos hasta recibir respuestas.
 
 ## 2. Exploración antes de diseñar
 
@@ -18,11 +61,15 @@ Extracto fiel de las iteraciones decisivas de la sesión del **28 de octubre de 
 
 **Comprobaciones reales:** el directorio estaba vacío; OpenSpec no estaba instalado. Se consultó su documentación oficial para verificar la estructura y el comando de inicialización de Codex. No se ejecutó ningún generador ni se creó un archivo antes de consultar las decisiones.
 
+
+
+
+
 ## 3. Decisiones consultadas
 
-**Asistente, preguntas literales:**
+**Asistente, preguntas de la sesión; la primera está reescrita para la entrega:**
 
-> Para la entrega, recomiendo un repositorio local listo para compartir en privado: README que responda los 5 puntos, OpenSpec mínimo, 2 diagramas Mermaid y evidencia real de esta interacción. Sin prototipo ni ZIP. ¿Te sirve ese alcance o quieres código ejecutable?
+> Para la entrega, recomiendo un repositorio local listo para compartir : README que responda a la resolucion del caso, OpenSpec mínimo, X diagramas Mermaid y evidencia real de esta interacción. ¿Te sirve ese alcance o quieres código ejecutable?
 
 > Para 4 personas y 8 semanas, recomiendo separar portal/API de negocio, sincronizadores con proveedores y ejecución de IA, con contratos claros y una sola base PostgreSQL protegida por tenant. ¿Prefieres esa separación o servicios con bases propias desde el inicio?
 
@@ -36,7 +83,7 @@ Extracto fiel de las iteraciones decisivas de la sesión del **28 de octubre de 
 | Componentes y datos | `Tres componentes y una base (recomendado)` |
 | Semántica de crédito | `Sí, por respuesta completada (recomendado)` |
 
-**Efecto en el resultado:** el README responde los cinco puntos sin prototipo; la arquitectura separa API, sincronizadores y ejecución de IA con una base; el libro reserva un crédito por respuesta. Los supuestos no decididos se muestran como pendientes, sin atribuirlos al usuario.
+**Efecto en el resultado:** el README responde a la resolucon del problema; la arquitectura separa API, sincronizadores y ejecución de IA con una base; el libro reserva un crédito por respuesta. Los supuestos no decididos se muestran como pendientes, sin atribuirlos al usuario.
 
 ## 4. Segunda iteración: el usuario ajustó dos recomendaciones
 

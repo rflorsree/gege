@@ -40,3 +40,7 @@ La plataforma SHALL permitir a un rol autorizado solicitar la cancelación de un
 #### Scenario: Cancelación pendiente de aceptación
 - **WHEN** el PAC indica que la cancelación requiere aceptación del receptor
 - **THEN** el portal mantiene la factura en estado de cancelación pendiente y no la presenta como cancelada
+
+#### Scenario: Solicitud repetida
+- **WHEN** se repite una solicitud de cancelación con el mismo identificador de operación
+- **THEN** se conserva una sola operación fiscal y se muestra su estado actual

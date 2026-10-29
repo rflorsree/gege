@@ -13,6 +13,10 @@ La plataforma SHALL asignar 100 créditos al plan básico y 300 al premium por p
 - **WHEN** llegan dos solicitudes simultáneas y solo queda un crédito disponible
 - **THEN** como máximo una obtiene reserva y la otra recibe una respuesta sin cargo por falta de saldo
 
+#### Scenario: Consulta de créditos de otra línea
+- **WHEN** el titular intenta consultar el saldo de una línea ajena mediante el asistente
+- **THEN** la herramienta no devuelve el saldo ni datos que permitan inferir esa línea
+
 ### Requirement: Cobro único por respuesta
 La plataforma SHALL reservar un crédito al iniciar una respuesta y confirmarlo una sola vez después de la entrega completa; en WhatsApp exige acuse `delivered` o `read`.
 

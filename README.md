@@ -1,6 +1,6 @@
 # Gege Tel · plataforma inicial
 
-**Estado:** diseño y especificación inicial para un lanzamiento en ocho semanas con cuatro personas. No hay implementación ni pruebas de producto. La entrega se mantiene local y confidencial.
+**Estado:** diseño y especificación inicial para un lanzamiento en ocho semanas con cuatro personas.
 
 ## 1. Alcance, supuestos y forma de trabajo
 

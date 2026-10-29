@@ -9,10 +9,14 @@ context: |
 
 rules:
   proposal:
-    - Explicar valor, alcance y exclusiones en menos de 400 palabras.
+    - Justificar el alcance para cuatro personas y ocho semanas; declarar lo que queda fuera del piloto.
   specs:
-    - Escribir comportamientos observables y escenarios verificables; evitar decisiones de implementación.
+    - Cuando una capacidad usa datos empresariales, incluir un escenario de acceso denegado entre tenants o líneas.
+    - Cuando depende de un proveedor, especificar qué ve el usuario si los datos están atrasados, faltan o el proveedor falla.
+    - Cuando afecta créditos o facturas, cubrir duplicados, reintentos y estados pendientes sin prometer éxito antes de confirmarlo.
   design:
-    - Explicitar límites de confianza, dueño de cada dato y fallos de proveedores.
+    - Identificar dueño de cada dato, origen del tenant y autorización en cada límite entre componentes.
+    - Explicar cómo se concilian eventos duplicados o tardíos de WhatsApp y respuestas ambiguas del PAC.
+    - Justificar cualquier componente nuevo frente al plazo de ocho semanas y su costo operativo.
   tasks:
-    - Mantener hitos comprobables para cuatro personas y ocho semanas.
+    - Asociar cada hito con evidencia de aceptación; incluir pruebas de dos tenants, créditos concurrentes y fallos de proveedor cuando aplique.
