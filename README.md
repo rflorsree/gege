@@ -63,7 +63,7 @@ flowchart LR
 
 La **API de negocio** es dueña de identidad empresarial, membresías, líneas, asignaciones, centros de costo, facturas, solicitudes de corrección/cancelación, catálogo publicado y libro de créditos. Es la única que accede a PostgreSQL. Los dos productos comparten estas capacidades y contratos, pero conservan interfaces y permisos distintos. El **sincronizador** traduce e idempotentiza datos de proveedores y entrega cambios a la API; puede fallar o reintentarse sin bloquear el portal. El **ejecutor de IA** adapta web/WhatsApp, limita herramientas y modelos y solo obtiene datos mediante la API. Cada componente puede desplegarse y escalarse por separado; una base y contratos pequeños mantienen el alcance viable para cuatro personas.
 
-No se incorpora bus de eventos, motor de agentes múltiples, búsqueda vectorial ni base por servicio en el lanzamiento. La API recibe operaciones idempotentes de integración; una cola gestionada solo se añadiría si los reintentos y picos medidos lo exigen. No se promete tiempo real para datos que los proveedores entregan por consulta.
+Los procesos diferidos usan eventos durables, reintentos e idempotencia. Consultas, autorización y reserva/débito de créditos siguen siendo transaccionales en la API de negocio. No se incorpora motor de agentes múltiples, búsqueda vectorial ni base por servicio en el lanzamiento. No se promete tiempo real para datos que los proveedores entregan por consulta.
 
 En facturación, un rol autorizado inicia la solicitud en el portal y ve su historial y estado. Una corrección prepara un CFDI sustituto relacionado antes de pedir la cancelación del anterior; una cancelación registra el motivo y espera el resultado fiscal, que puede requerir aceptación del receptor. Ninguna solicitud cambia el estado a «cancelada» por el solo hecho de enviarse al PAC. La operación se audita y se concilia antes de reintentar una respuesta ambigua. El flujo concreto se valida con el PAC y el responsable fiscal. [SAT: proceso de cancelación](https://www.sat.gob.mx/minisitio/Factura/cancela_procesocancelacion.htm).
 
@@ -84,11 +84,18 @@ sequenceDiagram
   actor U as Titular
   participant C as Web / WhatsApp
   participant A as Ejecutor IA
+  participant Q as Cola de eventos
   participant B as API de negocio
   participant D as PostgreSQL
   participant M as Modelo primario / alterno
   U->>C: Envía mensaje
   C->>A: Entrega con ID de canal
+  opt WhatsApp
+    A->>Q: Encolar mensaje
+    Q-->>A: Confirmación durable
+    A-->>C: Acuse al webhook
+    Q->>A: Entregar trabajo
+  end
   A->>B: Validar identidad y reservar respuesta (ID idempotente)
   B->>D: Transacción: línea vigente, saldo y reserva
   D-->>B: Reserva única o sin saldo
@@ -101,7 +108,14 @@ sequenceDiagram
   end
   M-->>A: Respuesta final
   A->>C: Enviar respuesta con ID idempotente
-  C-->>A: Entrega confirmada (web o delivered/read)
+  opt WhatsApp
+    C-->>A: Estado delivered/read
+    A->>Q: Encolar acuse de entrega
+    Q->>A: Entregar acuse
+  end
+  opt Web
+    C-->>A: Respuesta completa confirmada
+  end
   A->>B: Confirmar reserva
   B->>D: Transacción: convertir reserva en débito único
   B-->>A: Saldo actualizado
@@ -127,7 +141,7 @@ El ejecutor registra tokens, costo estimado, latencia y errores por modelo, empr
 | 7 | Pruebas de aislamiento, concurrencia de créditos, acuses tardíos, corrección/cancelación fiscal, gasto y fallos de proveedores. |
 | 8 | Piloto de pocas empresas, correcciones, observación y decisión humana de salida. |
 
-**Tres componentes usados ya hechos:** identidad gestionada para sesiones/MFA; servicio gestionado de PostgreSQL con copias y recuperación; proveedor oficial/BSP de WhatsApp para mensajería y webhooks. El PAC y los proveedores de telefonía, catálogo e IA son dependencias del escenario y se integran mediante contratos, sin reconstruirlos.
+**Tres componentes usados ya hechos:** proveedor de identidad para sesiones/MFA; PostgreSQL con su opción operada en AWS o plataforma HA existente on premise; proveedor oficial/BSP de WhatsApp para mensajería y webhooks. El PAC y los proveedores de telefonía, catálogo e IA son dependencias del escenario y se integran mediante contratos, sin reconstruirlos.
 
 **Tres riesgos prioritarios:**
 
@@ -138,3 +152,9 @@ El ejecutor registra tokens, costo estimado, latencia y errores por modelo, empr
 | Cobro duplicado o gasto de IA fuera de control | Libro de reservas, claves idempotentes, conciliación, presupuestos y degradación por empresa; pruebas concurrentes y alerta en piloto. |
 
 La decisión de salida depende de demostrar estos controles con proveedores reales. Si una integración crítica no permite esa verificación en la semana 7, el piloto reduce su alcance en vez de simular que está lista.
+
+## 6. Tecnología y resiliencia de despliegue
+
+El [diseño OpenSpec](openspec/changes/lanzamiento-mvp/design.md#tecnología-y-despliegue) incluye dos diagramas comparables: AWS con contenedores ECS/Fargate en dos AZ, RDS PostgreSQL Multi-AZ y SQS; y on premise con Kubernetes, PostgreSQL HA y Kafka como broker de referencia en tres dominios físicos. Ambos conservan la misma API de negocio como dueña de los datos y eventos para los procesos diferidos. La opción on premise exige infraestructura y operación de alta disponibilidad ya disponibles; no supone que cuatro personas la construyan desde cero durante el lanzamiento.
+
+Las decisiones de framework backend/frontend, el uso de Redis, la región y los objetivos RTO/RPO quedan abiertos hasta medir carga, latencia y costo. Docker puede empaquetar imágenes compatibles con ambos despliegues; no obliga a elegir el runtime de los nodos.

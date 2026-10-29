@@ -4,6 +4,8 @@ context: |
   Gege Tel lanzará en ocho semanas un portal empresarial y beneficios para titulares de línea por web y WhatsApp.
   Equipo: cuatro personas. Entregable actual: arquitectura y especificación; no existe implementación.
   Componentes acordados: API de negocio, sincronizadores de proveedores y ejecución de IA; una base PostgreSQL cuyo acceso de aplicación pertenece a la API.
+  Procesos diferidos por eventos; consultas, autorización y reserva de créditos siguen siendo transaccionales.
+  Evaluar AWS con ECS/Fargate en varias AZ y on premise con Kubernetes en dominios físicos independientes como opciones comparables.
   Un crédito se reserva por respuesta del asistente y se confirma al entregarse: WhatsApp exige estado delivered/read, no solo envío aceptado.
   Escribir en español. Mantener los encabezados estructurales y SHALL/MUST de OpenSpec en inglés.
 
@@ -18,5 +20,6 @@ rules:
     - Identificar dueño de cada dato, origen del tenant y autorización en cada límite entre componentes.
     - Explicar cómo se concilian eventos duplicados o tardíos de WhatsApp y respuestas ambiguas del PAC.
     - Justificar cualquier componente nuevo frente al plazo de ocho semanas y su costo operativo.
+    - Separar disponibilidad de una zona/sitio, recuperación de datos y recuperación regional; declarar los supuestos de operación on premise.
   tasks:
     - Asociar cada hito con evidencia de aceptación; incluir pruebas de dos tenants, créditos concurrentes y fallos de proveedor cuando aplique.
