@@ -155,6 +155,50 @@ La decisión de salida depende de demostrar estos controles con proveedores real
 
 ## 6. Tecnología y resiliencia de despliegue
 
-El [diseño OpenSpec](openspec/changes/lanzamiento-mvp/design.md#tecnología-y-despliegue) incluye dos diagramas comparables: AWS con contenedores ECS/Fargate en dos AZ, RDS PostgreSQL Multi-AZ y SQS; y on premise con Kubernetes, PostgreSQL HA y Kafka como broker de referencia en tres dominios físicos. Ambos conservan la misma API de negocio como dueña de los datos y eventos para los procesos diferidos. La opción on premise exige infraestructura y operación de alta disponibilidad ya disponibles; no supone que cuatro personas la construyan desde cero durante el lanzamiento.
+Los siguientes diagramas presentan dos opciones comparables: AWS con contenedores ECS/Fargate en dos AZ, RDS PostgreSQL Multi-AZ y SQS; y on premise con Kubernetes, PostgreSQL HA y Kafka como broker de referencia en tres dominios físicos. Ambas conservan la misma API de negocio como dueña de los datos y eventos para los procesos diferidos. La opción on premise exige infraestructura y operación de alta disponibilidad ya disponibles; no supone que cuatro personas la construyan desde cero durante el lanzamiento. El [diseño OpenSpec](openspec/changes/lanzamiento-mvp/design.md#tecnología-y-despliegue) desarrolla los motivos y límites de cada opción.
+
+### AWS · dos zonas de disponibilidad
+
+```mermaid
+flowchart LR
+  U[Empresa y titular] --> CF[CloudFront + S3<br/>web]
+  U --> ALB[WAF + ALB]
+  WA[WhatsApp] --> ALB
+  CF --> ALB
+  ALB --> B[API negocio<br/>ECS Fargate AZ A y B]
+  ALB --> I[API IA y canales<br/>ECS Fargate AZ A y B]
+  I --> B
+  B --> DB[(RDS PostgreSQL<br/>Multi-AZ)]
+  DB --> Backup[Copias y restauración<br/>probada]
+  B -->|outbox| Q[SQS por flujo<br/>y DLQ]
+  I -->|mensaje recibido| Q
+  Q --> WI[Workers IA<br/>ECS Fargate AZ A y B]
+  Q --> WX[Workers integraciones<br/>ECS Fargate AZ A y B]
+  WI --> B
+  WX --> B
+  WI --> M[Proveedor IA]
+  WX --> P[Telefonía, beneficios y PAC]
+```
+
+### On premise · tres dominios físicos
+
+```mermaid
+flowchart LR
+  U[Empresa y titular] --> L[DNS o balanceador HA<br/>NGINX redundante]
+  WA[WhatsApp] --> L
+  L --> B[API negocio<br/>Kubernetes sitios A, B y C]
+  L --> I[API IA y canales<br/>Kubernetes sitios A, B y C]
+  I --> B
+  B --> DB[(PostgreSQL HA + Patroni<br/>datos en A, B y C)]
+  B -->|outbox| K[Kafka HA<br/>brokers en A, B y C]
+  I -->|mensaje recibido| K
+  K --> WI[Workers IA<br/>Kubernetes A, B y C]
+  K --> WX[Workers integraciones<br/>Kubernetes A, B y C]
+  WI --> B
+  WX --> B
+  WI --> M[Proveedor IA]
+  WX --> P[Telefonía, beneficios y PAC]
+  DB --> Backup[Copias fuera del sitio<br/>restauración probada]
+```
 
 Las decisiones de framework backend/frontend, el uso de Redis, la región y los objetivos RTO/RPO quedan abiertos hasta medir carga, latencia y costo. Docker puede empaquetar imágenes compatibles con ambos despliegues; no obliga a elegir el runtime de los nodos.
