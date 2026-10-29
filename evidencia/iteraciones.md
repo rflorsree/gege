@@ -97,6 +97,16 @@ Registro editado de las iteraciones decisivas de la sesión del **28 de octubre 
 
 **Corrección aplicada:** el portal permite iniciar y seguir corrección/cancelación fiscal, con estados pendientes hasta confirmación del PAC. WhatsApp no confirma el débito con `sent`: espera `delivered` o `read`; si no llega el acuse antes del plazo, libera la reserva. Se documentó expresamente el costo potencial de respuestas entregadas sin acuse oportuno.
 
-## 5. Arnés y límites de la evidencia
+## 5. Ajuste de diagramas solicitado por el usuario
+
+**Prompt editado para la evidencia a partir de la instrucción del usuario:**
+
+```text
+Para el diagrama de componentes  sugiero enfocarnos  en 2 vertientes enfocandonos a el usuario primero vista usuario/tecnologia es decir usuario-web/whatsapp- api negocio / api ia (whatsapp) -db-pac etc y el otro enfocado a un nivel mas gerencial sobre el flujo soft
+```
+
+**Cambio aplicado:** el diagrama de componentes pasó a dos vistas: recorrido del usuario por canales y sistemas, y flujo gerencial del servicio. La secuencia de reserva y débito de créditos permanece en su sección técnica.
+
+## 6. Arnés y límites de la evidencia
 
 Se ejecutó `npx --yes @fission-ai/openspec@latest init --tools none --language Spanish --no-animation`; el CLI informó versión `1.15.0`. Después se creó el cambio `lanzamiento-mvp`. La opción `--tools none` mantiene solo OpenSpec y evita seis skills generadas que no aportaban a esta entrega; `AGENTS.md` contiene las reglas locales. Codex redactó y corrigió los documentos a partir de las decisiones anteriores. No se utilizaron subagentes ni se ejecutó una prueba de producto.

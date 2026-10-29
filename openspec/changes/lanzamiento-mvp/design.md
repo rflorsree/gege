@@ -2,7 +2,7 @@
 
 ## Context
 
-Dos productos comparten líneas, identidad, beneficios, facturación y créditos. El equipo tiene cuatro personas y ocho semanas. Los proveedores externos pueden entregar datos tarde o fallar. La arquitectura y dos diagramas de flujo se explican en el [README principal](../../../README.md).
+Dos productos comparten líneas, identidad, beneficios, facturación y créditos. El equipo tiene cuatro personas y ocho semanas. Los proveedores externos pueden entregar datos tarde o fallar. El [README principal](../../../README.md) muestra la arquitectura desde el usuario y la tecnología, el flujo gerencial del servicio y la secuencia de créditos.
 
 ## Decisions
 

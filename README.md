@@ -22,31 +22,43 @@ Para continuar: `npx --yes @fission-ai/openspec@1.15.0 status --change lanzamien
 
 ## 2. Componentes y plataforma compartida
 
+### Vista del usuario y la tecnología
+
 ```mermaid
 flowchart LR
-  subgraph Canales[Experiencias separadas]
-    Portal[Portal empresa]
-    Web[Web titular]
-    WA[WhatsApp]
-  end
-  subgraph Plataforma[Plataforma compartida]
-    API[API de negocio<br/>identidad, líneas, centros de costo,<br/>beneficios, facturas, créditos]
-    IA[Ejecutor de IA<br/>canales, herramientas, modelos]
-    Sync[Sincronizadores<br/>telefonía, catálogo, PAC]
-    DB[(PostgreSQL<br/>datos por empresa y libro de créditos)]
-  end
-  Portal --> API
+  Empresa[Empresa] --> Portal[Portal web empresarial]
+  Titular[Titular de línea] --> Web[Web de beneficios]
+  Titular --> WA[WhatsApp]
+  Portal --> API[API de negocio]
   Web --> API
-  Web --> IA
+  Web --> IA[API de IA y canales]
   WA --> IA
-  IA -->|herramientas y reserva| API
-  Sync -->|eventos normalizados| API
-  API -->|facturas pendientes de timbrado| Sync
-  API --> DB
-  IA --> Modelos[Proveedor IA primario / alterno]
-  Sync --> Tel[API telefonía]
-  Sync --> Catalogo[Proveedor beneficios]
-  Sync --> PAC[PAC]
+  IA -->|identidad, consultas y créditos| API
+  API --> DB[(PostgreSQL)]
+  IA --> Modelo[Proveedor de IA]
+  API <--> Sync[Integraciones]
+  Sync <--> Tel[Proveedor de telefonía]
+  Sync <--> Catalogo[Proveedor de beneficios]
+  Sync <--> PAC[PAC]
+```
+
+La empresa llega a la API de negocio por el portal. El titular consulta beneficios desde web o conversa con el asistente desde web/WhatsApp. La API de IA usa la API de negocio para validar identidad, consultar datos y mover créditos; solo esta última accede a la base. Las integraciones mantienen datos de telefonía y catálogo y llevan operaciones fiscales al PAC.
+
+### Vista gerencial del flujo de servicio
+
+```mermaid
+flowchart LR
+  Tel[Telefonía<br/>líneas y consumo] --> Core[Gege Tel<br/>datos, permisos y saldo]
+  Catalogo[Proveedor de beneficios<br/>catálogo] --> Core
+  Core --> Empresa[Empresa organiza líneas<br/>y centros de costo]
+  Empresa --> Facturas[Consulta facturas y solicita<br/>corrección o cancelación]
+  Facturas --> PAC[PAC confirma<br/>estado fiscal]
+  PAC --> Estado[Empresa ve el<br/>resultado fiscal]
+  Core --> Titular[Titular entra por<br/>web o WhatsApp]
+  Titular --> Beneficios[Consulta beneficios]
+  Titular --> Asistente[Usa el asistente]
+  Asistente --> Respuesta[Recibe la respuesta]
+  Respuesta --> Credito[Se descuenta un crédito<br/>tras confirmar la entrega]
 ```
 
 La **API de negocio** es dueña de identidad empresarial, membresías, líneas, asignaciones, centros de costo, facturas, solicitudes de corrección/cancelación, catálogo publicado y libro de créditos. Es la única que accede a PostgreSQL. Los dos productos comparten estas capacidades y contratos, pero conservan interfaces y permisos distintos. El **sincronizador** traduce e idempotentiza datos de proveedores y entrega cambios a la API; puede fallar o reintentarse sin bloquear el portal. El **ejecutor de IA** adapta web/WhatsApp, limita herramientas y modelos y solo obtiene datos mediante la API. Cada componente puede desplegarse y escalarse por separado; una base y contratos pequeños mantienen el alcance viable para cuatro personas.
